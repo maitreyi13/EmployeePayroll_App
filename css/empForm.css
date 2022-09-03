@@ -227,3 +227,8 @@ a.button:hover {
     background: grey;
     color: white;
 }
+error-output {
+    font-size: 12px;
+    font-style: italic;
+    color: red;
+}
