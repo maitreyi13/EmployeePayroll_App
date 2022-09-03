@@ -1,7 +1,18 @@
 window.addEventListener('DOMContentLoaded', (event) => {
-    salaryOutput();
-    validateName();
-    //validateDate();
+    const name = document.querySelector('#name');
+    const textError = document.querySelector('.text-error');
+    name.addEventListener('input', function() {
+        if (name.value.length == 0) {
+            textError.textContent = " ";
+            return;
+        }
+        try {
+            (new EmployeePayrollData()).name = name.value;
+            textError.textContent = " ";
+        } catch (e) {
+            textError.textContent = e;
+        }
+    });
 
 });
 
@@ -92,3 +103,44 @@ function createAndUpdateStorage(employeePayrollData) {
     }
     localStorage.setItem("EmployeePayrollListList", JSON.stringify(employeePayrollList));
 }
+function resetButton() {
+    setValue('#name', '');
+    setValue('#salary', '');
+    setValue('#notes', '');
+    setValue('#day', '1');
+    setValue('#month', 'January');
+    setValue('#year', '2021');
+    setTextValue('.text-error', '');
+    setTextValue('.date-error', '');
+    unsetSelectedValues('[name=profile]');
+    unsetSelectedValues('[name=gender]');
+    unsetSelectedValues('[name=department]');
+}
+
+function setTextValue(id, value) {
+    const textError = document.querySelector(id);
+    textError.textContent = value;
+}
+
+function setValue(id, value) {
+    let element = document.querySelector(id);
+    element.value = value;
+}
+
+function unsetSelectedValues(propertyValue) {
+    let allItems = document.querySelectorAll(propertyValue);
+    allItems.forEach(item => {
+        item.checked = false;
+    });
+}
+const createId = () => {
+    var id = localStorage.getItem("currentId");
+    if (id == undefined) {
+        localStorage.setItem("currentId", 1);
+        return 2;
+    } else {
+        id = id + 1;
+        localStorage.setItem("currentId", id);
+        return id;
+    }
+};
