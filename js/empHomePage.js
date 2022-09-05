@@ -3,6 +3,7 @@ let employeePayrollList;
     employeePayrollList = getEmployeePayrollDataFromStorage();
     document.querySelector(".emp-count").textContent = employeePayrollList.length;
     createInnerHtml();
+    localStorage.removeItem("EmployeeToEdit");
     });
 
     const getEmployeePayrollDataFromStorage = () => {
@@ -10,6 +11,7 @@ let employeePayrollList;
             JSON.parse(localStorage.getItem("EmployeePayrollList")) : [];
     };
 
+    //create operation
     const createInnerHtml = () => {
         const headerHtml =
             "<th>Profile</th>" +
@@ -26,14 +28,14 @@ let employeePayrollList;
         for (let employeePayrollData of employeePayrollList) {
             innerHtml = `${innerHtml}
             <tr>
-                <td><img class="profile" alt="" src="${employeePayrollData._profilePic}"></td>
+                <td><img class="profile" alt="" src="${employeePayrollData._profilePicture}"></td>
                 <td>${employeePayrollData._name}</td>
                 <td>${employeePayrollData._gender}</td>
-                <td>${getDepartmentHtml(employeePayrollData._department)}</td>
+                <td>${getDepartmentHtml(employeePayrollData._departments)}</td>
                 <td>${employeePayrollData._salary}</td>
                 <td>${stringifyDate(employeePayrollData._startDate)}</td>
                 <td>
-                    <img id="${employeePayrollData._name}" onclick="remove(this)" alt="delete" src="..//assets/icons/delete-black-18dp.svg">
+                    <img id="${employeePayrollData._id}" onclick="remove(this)" alt="delete" src="..//assets/icons/delete-black-18dp.svg">
                     <img id="${employeePayrollData._id}" onclick="update(this)" alt="edit" src="..//assets/icons/create-black-18dp.svg">
                 </td>
             </tr>
@@ -43,8 +45,10 @@ let employeePayrollList;
 
         const getDepartmentHtml = (departmentList) => {
             let departmentHtml = "";
-            for (let department of departmentList) {
-                departmentHtml = `${departmentHtml} <div class="dept-label">${department}</div>`;
+            if (departmentList) {
+                for (let department of departmentList) {
+                    departmentHtml = `${departmentHtml} <div class="dept-label">${department}</div>`;
+                }
             }
             return departmentHtml;
         };
@@ -52,10 +56,16 @@ let employeePayrollList;
 const remove = (node) => {
     let employeePayrollData = employeePayrollList.find(employeeData => employeeData._name == node.id);
     if (!employeePayrollData) return;
-    const index = employeePayrollList.map(employeeData => employeeData._name).indexOf(employeePayrollData._name);
-    alert("Do you want to delete?");
+    const index = employeePayrollList.map(employeeData => employeeData._id).indexOf(employeePayrollData._id);
     employeePayrollList.splice(index, 1);
     localStorage.setItem("EmployeePayrollList", JSON.stringify(employeePayrollList));
     document.querySelector(".emp-count").textContent = employeePayrollList.length;
     createInnerHtml();
 };
+//UC2-update operation
+const update = (node) => {
+    let employeePayrollData = employeePayrollList.find(employeeData => employeeData._id == node.id);
+    if (!employeePayrollData) return;
+    localStorage.setItem("EmployeeToEdit", JSON.stringify(employeePayrollData));
+    window.location.replace(site_properties.add_emp_payroll_page);
+}
